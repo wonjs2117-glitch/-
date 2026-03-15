@@ -23,10 +23,11 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   
+  // 1. 속보 상태 및 DB 연동
   const [isBreakingMode, setIsBreakingMode] = useState(false);
-  const [breakingNews, setBreakingNews] = useState(['불러오는 중...']);
+  const [breakingNews, setBreakingNews] = useState(['데이터를 불러오는 중...']);
   
-  // 텍스트 크기 조절 상태 (base, lg, xl)
+  // 4. 글자 크기 조절 상태
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
 
   const [isEditing, setIsEditing] = useState(false);
@@ -39,7 +40,7 @@ export default function Home() {
     setMounted(true);
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     fetchNews();
-    fetchBreakingNews(); // 속보 불러오기
+    fetchBreakingNews();
     return () => clearInterval(timer);
   }, []);
 
@@ -49,7 +50,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  // 속보 불러오기 함수
+  // 속보 불러오기
   const fetchBreakingNews = async () => {
     const { data, error } = await supabase.from('breaking_news').select('content').order('id', { ascending: true });
     if (!error && data && data.length > 0) {
@@ -84,27 +85,25 @@ export default function Home() {
     alert("처리가 완료되었습니다.");
   };
 
-  // 속보 업데이트 및 DB 저장
+  // 속보 DB 저장
   const handleUpdateBreaking = async () => {
-    // 기존 속보 데이터를 모두 지우고 새로 넣거나, 특정 ID를 업데이트하는 방식
-    // 여기서는 간단하게 기존 데이터를 덮어쓰는 로직을 가정합니다.
     for (let i = 0; i < breakingNews.length; i++) {
       await supabase.from('breaking_news').upsert({ id: i + 1, content: breakingNews[i] });
     }
     setIsBreakingMode(false);
-    alert("속보가 업데이트되었습니다.");
+    alert("속보가 실시간 반영 및 저장되었습니다.");
   };
 
-  // 글자 크기 클래스 맵핑
+  // 글자 크기 클래스 정의
   const fontSizeClass = {
     small: 'text-base md:text-lg',
     medium: 'text-lg md:text-xl',
-    large: 'text-xl md:text-3xl'
+    large: 'text-xl md:text-2xl'
   };
 
   return (
     <div className="bg-white min-h-screen font-serif text-[#1a1a1a] antialiased">
-      {/* 상단 정보 바 */}
+      {/* 🚀 상단 정보 바 */}
       <div className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-10 flex justify-between items-center text-[10px] md:text-[11px] font-sans font-semibold text-[#888]">
           <div className="flex gap-4 items-center">
@@ -121,7 +120,7 @@ export default function Home() {
 
       <header className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-14">
         <div className="text-center mb-8 md:mb-10">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-[-0.05em] leading-tight cursor-default select-none">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-[-0.05em] leading-tight cursor-default select-none transition-all">
             오늘의 시선
           </h1>
         </div>
@@ -141,7 +140,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 속보창 */}
+      {/* 🚀 속보창 */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 mb-12">
         <div className="border-y-2 border-black py-3.5 flex items-center gap-4 text-[13px] md:text-[14px] font-sans">
           <span className="font-bold text-red-700 shrink-0 tracking-tighter border-r border-gray-300 pr-4">속보</span>
@@ -153,7 +152,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 메인 레이아웃 */}
+      {/* 🏛️ 메인 레이아웃 */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           
@@ -169,7 +168,8 @@ export default function Home() {
                     <div className="absolute -top-7 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] flex gap-3 transition-opacity">
                       <button onClick={(e) => { e.stopPropagation(); if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); } }} className="underline text-gray-400 hover:text-black">수정</button>
                     </div>
-                    <h4 className="text-2xl md:text-[26px] font-bold leading-tight mb-4 group-hover:text-gray-600 transition-colors underline-offset-8 group-hover:underline decoration-gray-200">{news.title}</h4>
+                    {/* 제목 크기 수정됨 (text-xl md:text-[22px]) */}
+                    <h4 className="text-xl md:text-[22px] font-bold leading-tight mb-4 group-hover:text-gray-600 transition-colors underline-offset-8 group-hover:underline decoration-gray-200">{news.title}</h4>
                     <p className="text-gray-600 text-[16px] leading-relaxed line-clamp-3 mb-5 text-justify">{news.content}</p>
                     <div className="text-[11px] font-sans font-bold text-gray-400 uppercase tracking-widest">Won Jun-sik</div>
                   </article>
@@ -188,7 +188,8 @@ export default function Home() {
                     <div className="absolute -top-7 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] flex gap-3 transition-opacity">
                       <button onClick={(e) => { e.stopPropagation(); if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); } }} className="underline text-gray-400 hover:text-black">수정</button>
                     </div>
-                    <h4 className="text-2xl md:text-[26px] font-bold leading-tight mb-4 group-hover:text-gray-600 transition-colors underline-offset-8 group-hover:underline decoration-gray-200">{news.title}</h4>
+                    {/* 제목 크기 수정됨 */}
+                    <h4 className="text-xl md:text-[22px] font-bold leading-tight mb-4 group-hover:text-gray-600 transition-colors underline-offset-8 group-hover:underline decoration-gray-200">{news.title}</h4>
                     <p className="text-gray-600 text-[16px] leading-relaxed line-clamp-3 mb-5 text-justify">{news.content}</p>
                     <div className="text-[11px] font-sans font-bold text-gray-400 uppercase tracking-widest">Won Jun-sik</div>
                   </article>
@@ -216,21 +217,30 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 푸터 생략... (기존과 동일) */}
+      <footer className="border-t border-black max-w-7xl mx-auto px-4 md:px-6 py-12 mb-20 mt-10 text-center">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-[10px] md:text-[11px] font-sans font-medium text-gray-400 mb-8 uppercase tracking-wider">
+            {['조선', '동아', '중앙', '한겨레', '경향', '매경', '한경'].map(name => (
+              <span key={name} className="hover:text-black cursor-pointer transition-colors">{name}</span>
+            ))}
+          </div>
+          <div className="text-[9px] md:text-[10px] text-gray-400 font-medium uppercase tracking-[0.25em] leading-loose">
+            발행인 원준식 | 대한민국 서울 <br />
+            Copyright &copy; 2026 WON JUN SIK. All Rights Reserved.
+          </div>
+      </footer>
 
-      {/* 작성 버튼 */}
+      {/* ✎ 작성 버튼 */}
       <button onClick={() => { if(checkAuth()) { setIsCreating(true); setEditForm({title:'', category:'정치', content:''}); } }} className="fixed bottom-10 right-10 w-14 h-14 bg-black text-white flex items-center justify-center text-2xl z-40 shadow-xl rounded-full hover:scale-110 transition-transform">✎</button>
 
-      {/* 기사 상세/수정 모달 */}
+      {/* 🏛️ 기사 모달 (상세보기 및 편집) */}
       {(selectedNews || isCreating) && (
         <div className="fixed inset-0 bg-white z-[90] overflow-y-auto" onClick={() => { if(!isEditing && !isCreating) setSelectedNews(null); }}>
           <div className="max-w-4xl mx-auto px-6 py-16 min-h-screen relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }} className="fixed top-8 right-8 text-3xl font-light hover:rotate-90 transition-transform">&times;</button>
             
             {isEditing || isCreating ? (
-              // 수정/등록 모드
               <div className="flex flex-col gap-10 font-serif">
-                <textarea className="text-3xl md:text-5xl font-bold outline-none w-full h-32 resize-none border-b" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} placeholder="제목" />
+                <textarea className="text-2xl md:text-4xl font-bold outline-none w-full h-32 resize-none border-b" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} placeholder="제목" />
                 <select className="font-sans font-bold border-2 border-black w-40 p-2 text-sm" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
                   <option value="정치">정치</option>
                   <option value="경제">경제</option>
@@ -244,22 +254,22 @@ export default function Home() {
                 </div>
               </div>
             ) : (
-              // 읽기 모드
               selectedNews && (
                 <article>
                   <div className="mb-10 text-center border-b pb-10">
                     <span className="text-[11px] font-sans font-black uppercase tracking-[0.3em] mb-8 inline-block text-gray-400 border-b-2 border-black pb-1">{selectedNews.category}</span>
-                    <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-8 tracking-tight">{selectedNews.title}</h1>
+                    {/* 상세페이지 제목 크기 수정 (text-3xl md:text-5xl) */}
+                    <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-8 tracking-tight">{selectedNews.title}</h1>
                     <div className="font-sans text-[12px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-6">발행인 원준식 · {new Date(selectedNews.created_at).toLocaleDateString('ko-KR', { dateStyle: 'full' })}</div>
                     
-                    {/* 글자 크기 조절 컨트롤 */}
+                    {/* 4. 글자 크기 조절기 */}
                     <div className="flex justify-center gap-4 font-sans text-[10px] font-bold text-gray-400">
                       <button onClick={() => setFontSize('small')} className={`hover:text-black ${fontSize === 'small' ? 'text-black border-b border-black' : ''}`}>작게</button>
                       <button onClick={() => setFontSize('medium')} className={`hover:text-black ${fontSize === 'medium' ? 'text-black border-b border-black' : ''}`}>중간</button>
                       <button onClick={() => setFontSize('large')} className={`hover:text-black ${fontSize === 'large' ? 'text-black border-b border-black' : ''}`}>크게</button>
                     </div>
                   </div>
-                  {/* 본문: 양방향 정렬(text-justify) 및 글자 크기 가변 적용 */}
+                  {/* 2&3. 글꼴 기울임 제거 및 양방향 정렬 적용 */}
                   <div className={`text-[#1a1a1a] leading-relaxed font-serif max-w-3xl mx-auto whitespace-pre-line text-justify ${fontSizeClass[fontSize]}`}>
                     {selectedNews.content}
                   </div>
@@ -270,7 +280,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 속보 편집 모달 */}
+      {/* 🚀 속보 편집 모달 */}
       {isBreakingMode && (
         <div className="fixed inset-0 bg-white/98 z-[100] flex justify-center items-center p-6">
           <div className="max-w-md w-full font-sans text-center">
