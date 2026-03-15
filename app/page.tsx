@@ -30,8 +30,8 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
-  // 🔐 관리자 설정 (이 부분만 수정하세요!)
-  const adminPassword = "wonjs509173"; 
+  // 🔐 관리자 설정 (발행인님의 비밀번호를 다시 확인해 주세요!)
+  const adminPassword = "내비밀번호123"; 
 
   useEffect(() => {
     setMounted(true);
@@ -59,8 +59,22 @@ export default function Home() {
     return true;
   };
 
+  // 🗑️ 기사 삭제 함수
+  const handleDelete = async (id: number) => {
+    if (!checkAuth()) return;
+    if (confirm("정말로 이 기사를 삭제하시겠습니까? 삭제된 기사는 복구할 수 없습니다.")) {
+      const { error } = await supabase.from('news').delete().eq('id', id);
+      if (error) {
+        alert("삭제 중 오류가 발생했습니다.");
+      } else {
+        alert("기사가 정상적으로 삭제되었습니다.");
+        fetchNews(); // 목록 새로고침
+        setSelectedNews(null);
+      }
+    }
+  };
+
   const handleSave = async () => {
-    // 저장하기 직전에 한 번 더 확인 (보안 강화)
     if (isCreating) await supabase.from('news').insert([editForm]);
     else if (isEditing && selectedNews) await supabase.from('news').update(editForm).eq('id', selectedNews.id);
     
@@ -133,11 +147,15 @@ export default function Home() {
             <div className="space-y-12">
               {getNewsByCategory('정치').map((news, idx) => (
                 <article key={news.id} className="group relative cursor-pointer" onClick={() => setSelectedNews(news)}>
-                  <div className="absolute -top-4 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] font-bold text-gray-400 hover:text-black">
+                  <div className="absolute -top-4 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] font-bold text-gray-400 flex gap-2">
                     <button onClick={(e) => {
                       e.stopPropagation(); 
                       if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); }
-                    }} className="underline">수정</button>
+                    }} className="underline hover:text-black">수정</button>
+                    <button onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleDelete(news.id);
+                    }} className="underline hover:text-red-700">삭제</button>
                   </div>
                   <h4 className={`${idx === 0 ? 'text-4xl font-black' : 'text-2xl font-bold'} leading-tight mb-3 group-hover:underline underline-offset-4 decoration-1`}>
                     {news.title}
@@ -157,7 +175,17 @@ export default function Home() {
             </div>
             <div className="space-y-8">
               {getNewsByCategory('경제').map((news) => (
-                <article key={news.id} className="group cursor-pointer border-b border-gray-100 pb-6 last:border-0" onClick={() => setSelectedNews(news)}>
+                <article key={news.id} className="group relative cursor-pointer border-b border-gray-100 pb-6 last:border-0" onClick={() => setSelectedNews(news)}>
+                  <div className="absolute -top-1 right-0 opacity-0 group-hover:opacity-100 font-sans text-[9px] font-bold text-gray-400 flex gap-2">
+                    <button onClick={(e) => {
+                      e.stopPropagation(); 
+                      if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); }
+                    }} className="underline hover:text-black">수정</button>
+                    <button onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleDelete(news.id);
+                    }} className="underline hover:text-red-700">삭제</button>
+                  </div>
                   <h4 className="text-xl font-bold leading-tight mb-2 group-hover:text-gray-500 transition-colors">
                     {news.title}
                   </h4>
@@ -217,9 +245,16 @@ export default function Home() {
                 <select className="font-sans font-black text-xs uppercase border border-black w-32 p-1" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
                   <option value="정치">정치</option>
                   <option value="경제">경제</option>
+                  <option value="사회">사회</option>
+                  <option value="오피니언">오피니언</option>
                 </select>
                 <textarea className="h-[500px] text-lg leading-relaxed outline-none w-full" value={editForm.content} onChange={e => setEditForm({...editForm, content: e.target.value})} placeholder="본문을 입력하세요..." />
-                <button onClick={handleSave} className="bg-black text-white p-4 font-sans font-black uppercase text-sm tracking-widest">기사 발행</button>
+                <div className="flex gap-4">
+                  <button onClick={handleSave} className="flex-1 bg-black text-white p-4 font-sans font-black uppercase text-sm tracking-widest">기사 발행</button>
+                  {isEditing && (
+                    <button onClick={() => handleDelete(selectedNews!.id)} className="bg-red-700 text-white px-8 font-sans font-black uppercase text-sm tracking-widest">삭제</button>
+                  )}
+                </div>
               </div>
             ) : (
               selectedNews && (
