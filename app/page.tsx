@@ -30,7 +30,7 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
-  // 🔐 관리자 설정
+  // 🔐 관리자 설정 (비밀번호를 본인 설정에 맞게 유지하세요)
   const adminPassword = "wonjs509173"; 
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function Home() {
 
   return (
     <div className="bg-white min-h-screen font-serif text-[#1a1a1a] antialiased">
-      {/* 상단 정보 바 */}
+      {/* 🚀 상단 정보 바 */}
       <div className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-10 flex justify-between items-center text-[10px] md:text-[11px] font-sans font-semibold text-[#888]">
           <div className="flex gap-4 items-center">
@@ -91,15 +91,15 @@ export default function Home() {
         </div>
       </div>
 
-      <header className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
-        <div className="text-center mb-12">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-[-0.05em] leading-tight cursor-default select-none transition-all">
+      <header className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-14">
+        <div className="text-center mb-8 md:mb-10">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-[-0.05em] leading-tight cursor-default select-none transition-all">
             오늘의 시선
           </h1>
         </div>
 
         <div className="border-t-4 border-b border-black py-3 md:py-4 flex justify-between items-center px-1">
-          <div className="flex-1 text-[11px] font-sans font-bold text-gray-400 uppercase tracking-[0.2em] hidden md:block">
+          <div className="flex-1 text-[11px] font-sans font-bold text-gray-400 uppercase tracking-[0.2em] hidden md:block border-none">
             발행인 원준식
           </div>
           <nav className="flex gap-8 md:gap-16 font-sans text-[14px] md:text-[15px] font-bold tracking-tighter mx-auto md:mx-0">
@@ -113,7 +113,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 속보창 */}
+      {/* 🚀 속보창 */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 mb-12">
         <div className="border-y-2 border-black py-3.5 flex items-center gap-4 text-[13px] md:text-[14px] font-sans">
           <span className="font-bold text-red-700 shrink-0 tracking-tighter border-r border-gray-300 pr-4">속보</span>
@@ -125,7 +125,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 메인 3단 레이아웃 */}
+      {/* 🏛️ 메인 3단 레이아웃 */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           
@@ -193,60 +193,53 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="border-t border-black max-w-7xl mx-auto px-4 md:px-6 py-16 mb-24 mt-10">
+      {/* 🏛️ 슬림화된 푸터 */}
+      <footer className="border-t border-black max-w-7xl mx-auto px-4 md:px-6 py-12 mb-20 mt-10">
         <div className="text-center">
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 text-[12px] font-sans font-bold text-gray-400 mb-10 uppercase">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-[10px] md:text-[11px] font-sans font-medium text-gray-400 mb-8 uppercase tracking-wider">
             {['조선', '동아', '중앙', '한겨레', '경향', '매경', '한경'].map(name => (
-              <span key={name} className="hover:text-black cursor-pointer transition-colors border-b border-transparent hover:border-black">{name}</span>
+              <span key={name} className="hover:text-black cursor-pointer transition-colors">{name}</span>
             ))}
           </div>
-          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] leading-loose">
-            발행인 원준식 | SEOUL, KOREA <br />
+          <div className="text-[9px] md:text-[10px] text-gray-400 font-medium uppercase tracking-[0.25em] leading-loose">
+            발행인 원준식 | 대한민국 서울 <br />
             Copyright &copy; 2026 WON JUN SIK. All Rights Reserved.
           </div>
         </div>
       </footer>
 
-      {/* 플로팅 작성 버튼 */}
-      <button onClick={() => { if(checkAuth()) { setIsCreating(true); setEditForm({title:'', category:'정치', content:''}); } }} className="fixed bottom-10 right-10 w-14 h-14 bg-black text-white flex items-center justify-center text-2xl z-40 shadow-2xl hover:bg-gray-800 transition-all rounded-full">✎</button>
+      {/* 작성 버튼 */}
+      <button onClick={() => { if(checkAuth()) { setIsCreating(true); setEditForm({title:'', category:'정치', content:''}); } }} className="fixed bottom-10 right-10 w-14 h-14 bg-black text-white flex items-center justify-center text-2xl z-40 shadow-xl rounded-full hover:scale-110 transition-transform">✎</button>
 
       {/* 기사 모달 */}
       {(selectedNews || isCreating) && (
         <div className="fixed inset-0 bg-white z-[90] overflow-y-auto" onClick={() => { if(!isEditing && !isCreating) setSelectedNews(null); }}>
-          <div className="max-w-4xl mx-auto px-6 py-16 md:py-24 min-h-screen relative" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }} className="fixed top-8 right-8 text-3xl md:text-5xl font-light hover:rotate-90 transition-transform duration-300">&times;</button>
+          <div className="max-w-4xl mx-auto px-6 py-16 min-h-screen relative" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }} className="fixed top-8 right-8 text-3xl font-light hover:rotate-90 transition-transform">&times;</button>
             {isEditing || isCreating ? (
               <div className="flex flex-col gap-10 font-serif">
-                <textarea className="text-3xl md:text-5xl font-bold outline-none w-full h-32 resize-none border-b border-gray-100 focus:border-black transition-colors" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} placeholder="제목을 입력하세요" />
-                <div className="flex gap-4 items-center">
-                  <select className="font-sans font-bold border-2 border-black w-40 p-2 text-sm" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
-                    <option value="정치">정치</option>
-                    <option value="경제">경제</option>
-                    <option value="사회">사회</option>
-                    <option value="오피니언">오피니언</option>
-                  </select>
-                </div>
-                <textarea className="h-[600px] text-lg md:text-xl leading-relaxed outline-none w-full text-gray-800" value={editForm.content} onChange={e => setEditForm({...editForm, content: e.target.value})} placeholder="본문 내용을 입력하세요..." />
+                <textarea className="text-3xl md:text-5xl font-bold outline-none w-full h-32 resize-none border-b" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} placeholder="제목" />
+                <select className="font-sans font-bold border-2 border-black w-40 p-2 text-sm" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
+                  <option value="정치">정치</option>
+                  <option value="경제">경제</option>
+                  <option value="사회">사회</option>
+                  <option value="오피니언">오피니언</option>
+                </select>
+                <textarea className="h-[600px] text-lg outline-none w-full text-gray-800" value={editForm.content} onChange={e => setEditForm({...editForm, content: e.target.value})} placeholder="본문 내용..." />
                 <div className="flex gap-4">
-                  <button onClick={handleSave} className="flex-1 bg-black text-white py-4 md:py-5 font-sans font-black uppercase text-sm tracking-[0.2em] hover:bg-gray-800 transition-all">기사 발행</button>
-                  {isEditing && (
-                    <button onClick={() => handleDelete(selectedNews!.id)} className="bg-red-800 text-white px-8 md:px-12 font-sans font-bold uppercase text-sm hover:bg-red-900 transition-all">삭제</button>
-                  )}
+                  <button onClick={handleSave} className="flex-1 bg-black text-white py-4 font-sans font-bold uppercase text-sm tracking-widest">발행</button>
+                  {isEditing && <button onClick={() => handleDelete(selectedNews!.id)} className="bg-red-800 text-white px-8 font-sans font-bold uppercase text-sm">삭제</button>}
                 </div>
               </div>
             ) : (
               selectedNews && (
                 <article>
-                  <div className="mb-16 text-center border-b border-gray-100 pb-16">
+                  <div className="mb-16 text-center border-b pb-16">
                     <span className="text-[11px] font-sans font-black uppercase tracking-[0.3em] mb-8 inline-block text-gray-400 border-b-2 border-black pb-1">{selectedNews.category}</span>
                     <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-8 tracking-tight">{selectedNews.title}</h1>
-                    <div className="font-sans text-[12px] font-bold text-gray-500 uppercase tracking-[0.2em]">
-                      발행인 원준식 · {new Date(selectedNews.created_at).toLocaleString('ko-KR', { dateStyle: 'full' })}
-                    </div>
+                    <div className="font-sans text-[12px] font-bold text-gray-500 uppercase tracking-[0.2em]">발행인 원준식 · {new Date(selectedNews.created_at).toLocaleDateString('ko-KR', { dateStyle: 'full' })}</div>
                   </div>
-                  <div className="text-[#1a1a1a] leading-[1.9] md:leading-[2.1] text-justify whitespace-pre-line text-lg md:text-2xl font-serif max-w-3xl mx-auto px-2">
-                    {selectedNews.content}
-                  </div>
+                  <div className="text-[#1a1a1a] leading-relaxed text-lg md:text-2xl font-serif max-w-3xl mx-auto whitespace-pre-line">{selectedNews.content}</div>
                 </article>
               )
             )}
@@ -257,13 +250,12 @@ export default function Home() {
       {/* 속보 편집 모달 */}
       {isBreakingMode && (
         <div className="fixed inset-0 bg-white/98 z-[100] flex justify-center items-center p-6">
-          <div className="max-w-md w-full font-sans">
-            <h2 className="text-2xl font-black mb-12 border-b-4 border-black pb-4 italic uppercase tracking-tighter text-center italic">Editor Console</h2>
+          <div className="max-w-md w-full font-sans text-center">
+            <h2 className="text-xl font-black mb-12 border-b-4 border-black pb-4 italic tracking-tighter uppercase">Editor Console</h2>
             <div className="space-y-8 mb-12">
               {breakingNews.map((text, i) => (
                 <div key={i}>
-                  <p className="text-[10px] font-black text-gray-400 mb-2 uppercase tracking-[0.2em]">Headline 0{i+1}</p>
-                  <input className="w-full border-b-2 border-gray-100 py-2 outline-none focus:border-black font-serif text-xl transition-all" value={text} onChange={(e) => {
+                  <input className="w-full border-b-2 border-gray-100 py-2 outline-none focus:border-black font-serif text-lg text-center" value={text} onChange={(e) => {
                     const newBreaking = [...breakingNews];
                     newBreaking[i] = e.target.value;
                     setBreakingNews(newBreaking);
@@ -271,7 +263,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <button onClick={() => setIsBreakingMode(false)} className="w-full bg-black text-white py-5 font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all">Update Site</button>
+            <button onClick={() => setIsBreakingMode(false)} className="w-full bg-black text-white py-4 font-black text-sm uppercase tracking-widest">Update Headlines</button>
           </div>
         </div>
       )}
@@ -281,7 +273,6 @@ export default function Home() {
         body { color: #1a1a1a; word-break: keep-all; overflow-x: hidden; }
         @keyframes marquee-slow { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-marquee-slow { display: flex; animation: marquee-slow 50s linear infinite; }
-        @media (max-width: 768px) { .animate-marquee-slow { animation: marquee-slow 30s linear infinite; } }
       `}</style>
     </div>
   );
