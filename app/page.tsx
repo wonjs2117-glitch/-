@@ -31,7 +31,7 @@ export default function Home() {
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
   // 🔐 관리자 설정 (발행인님의 비밀번호를 다시 확인해 주세요!)
-  const adminPassword = "내비밀번호123"; 
+  const adminPassword = "wonjs509173"; 
 
   useEffect(() => {
     setMounted(true);
