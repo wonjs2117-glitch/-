@@ -30,6 +30,9 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
+  // 🔐 관리자 설정 (이 부분만 수정하세요!)
+  const adminPassword = "wonjs509173"; 
+
   useEffect(() => {
     setMounted(true);
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -46,10 +49,26 @@ export default function Home() {
 
   const getNewsByCategory = (cat: string) => newsList.filter(n => n.category === cat);
 
+  // 🔐 비밀번호 확인 함수
+  const checkAuth = () => {
+    const password = prompt("관리자 인증이 필요합니다. 비밀번호를 입력하세요:");
+    if (password !== adminPassword) {
+      alert("비밀번호가 올바르지 않습니다.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
+    // 저장하기 직전에 한 번 더 확인 (보안 강화)
     if (isCreating) await supabase.from('news').insert([editForm]);
     else if (isEditing && selectedNews) await supabase.from('news').update(editForm).eq('id', selectedNews.id);
-    setIsEditing(false); setIsCreating(false); setSelectedNews(null); fetchNews();
+    
+    setIsEditing(false); 
+    setIsCreating(false); 
+    setSelectedNews(null); 
+    fetchNews();
+    alert("처리가 완료되었습니다.");
   };
 
   return (
@@ -64,7 +83,7 @@ export default function Home() {
           </div>
           <div className="flex gap-4 items-center">
              <span>{mounted ? currentTime.toLocaleTimeString('ko-KR', { hour12: false }) : "--:--"}</span>
-             <button onClick={() => setIsBreakingMode(true)} className="hover:text-black">속보 설정</button>
+             <button onClick={() => { if(checkAuth()) setIsBreakingMode(true); }} className="hover:text-black">속보 설정</button>
           </div>
         </div>
       </div>
@@ -115,7 +134,10 @@ export default function Home() {
               {getNewsByCategory('정치').map((news, idx) => (
                 <article key={news.id} className="group relative cursor-pointer" onClick={() => setSelectedNews(news)}>
                   <div className="absolute -top-4 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] font-bold text-gray-400 hover:text-black">
-                    <button onClick={(e) => {e.stopPropagation(); setIsEditing(true); setSelectedNews(news); setEditForm(news);}} className="underline">수정</button>
+                    <button onClick={(e) => {
+                      e.stopPropagation(); 
+                      if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); }
+                    }} className="underline">수정</button>
                   </div>
                   <h4 className={`${idx === 0 ? 'text-4xl font-black' : 'text-2xl font-bold'} leading-tight mb-3 group-hover:underline underline-offset-4 decoration-1`}>
                     {news.title}
@@ -180,7 +202,9 @@ export default function Home() {
       </footer>
 
       {/* ➕ 작성 버튼 */}
-      <button onClick={() => {setIsCreating(true); setEditForm({title:'', category:'정치', content:''});}} className="fixed bottom-10 right-10 w-12 h-12 bg-black text-white flex items-center justify-center text-xl z-40 shadow-lg hover:scale-110 transition-transform">✎</button>
+      <button onClick={() => { 
+        if(checkAuth()) { setIsCreating(true); setEditForm({title:'', category:'정치', content:''}); }
+      }} className="fixed bottom-10 right-10 w-12 h-12 bg-black text-white flex items-center justify-center text-xl z-40 shadow-lg hover:scale-110 transition-transform">✎</button>
 
       {/* 기사 뷰어 */}
       {(selectedNews || isCreating) && (
