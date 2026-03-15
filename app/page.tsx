@@ -33,7 +33,7 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
-  const adminPassword = "내비밀번호123"; 
+  const adminPassword = "wonjs509173"; 
 
   useEffect(() => {
     setMounted(true);
