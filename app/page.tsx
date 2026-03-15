@@ -30,7 +30,7 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', category: '정치', content: '' });
 
-  // 🔐 관리자 설정 (발행인님의 비밀번호로 수정하세요!)
+  // 🔐 관리자 설정 (발행인님의 비밀번호로 유지하세요!)
   const adminPassword = "내비밀번호123"; 
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-10 flex justify-between items-center text-[11px] font-sans font-medium text-[#888]">
           <div className="flex gap-4 items-center">
             <span>{mounted ? currentTime.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }) : "---"}</span>
-            <span className="w-[1px] h-3 bg-gray-200"></span>
+            <span className="w-[1px] h-3 bg-gray-300"></span>
             <span>디지털 에디션</span>
           </div>
           <div className="flex gap-4 items-center">
@@ -113,7 +113,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 🚀 속보창 (검은 줄 스타일) */}
+      {/* 🚀 속보창 */}
       <div className="max-w-7xl mx-auto px-6 mb-12">
         <div className="border-y-2 border-black py-2.5 flex items-center gap-6 text-[14px] font-sans">
           <span className="font-bold text-red-600 shrink-0 tracking-tighter border-r border-gray-300 pr-4">속보</span>
@@ -125,56 +125,64 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 🏛️ 메인 콘텐츠 (정확히 2등분) */}
       <main className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           
-          <div className="md:col-span-8 md:border-r md:border-gray-100 md:pr-12">
+          {/* 왼쪽: 정치 영역 (50%) */}
+          <div className="md:border-r md:border-gray-100 md:pr-16">
             <div className="border-b border-black mb-8 pb-1">
-              <h3 className="text-xl font-bold font-sans">Top Stories</h3>
+              <h3 className="text-xl font-bold font-sans">정치</h3>
             </div>
             
-            <div className="space-y-16">
-              {getNewsByCategory('정치').map((news, idx) => (
+            <div className="space-y-12">
+              {getNewsByCategory('정치').map((news) => (
                 <article key={news.id} className="group relative cursor-pointer" onClick={() => setSelectedNews(news)}>
                   <div className="absolute -top-6 right-0 opacity-0 group-hover:opacity-100 font-sans text-[11px] font-bold text-gray-400 flex gap-3 transition-opacity">
                     <button onClick={(e) => { e.stopPropagation(); if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); } }} className="underline">수정</button>
                     <button onClick={(e) => { e.stopPropagation(); handleDelete(news.id); }} className="underline">삭제</button>
                   </div>
-                  <h4 className={`${idx === 0 ? 'text-4xl font-bold' : 'text-2xl font-bold'} leading-tight mb-4 group-hover:underline underline-offset-4`}>
+                  <h4 className="text-2xl font-bold leading-tight mb-4 group-hover:underline underline-offset-4 decoration-1">
                     {news.title}
                   </h4>
-                  <p className="text-[#555] text-[17px] leading-relaxed text-justify mb-5 line-clamp-3 font-serif">
+                  <p className="text-[#555] text-[16px] leading-relaxed text-justify mb-5 line-clamp-3 font-serif">
                     {news.content}
                   </p>
                   <div className="text-[11px] font-sans font-bold text-gray-400 uppercase tracking-widest">
-                    By Won Jun-sik · {new Date(news.created_at).toLocaleDateString('ko-KR')}
+                    By 원준식 · {new Date(news.created_at).toLocaleDateString('ko-KR')}
                   </div>
                 </article>
               ))}
             </div>
           </div>
 
-          <div className="md:col-span-4">
+          {/* 오른쪽: 경제 영역 (50%) */}
+          <div className="md:pl-0">
             <div className="border-b border-black mb-8 pb-1">
-              <h3 className="text-xl font-bold font-sans">Business</h3>
+              <h3 className="text-xl font-bold font-sans">경제</h3>
             </div>
-            <div className="space-y-10">
+            
+            <div className="space-y-12">
               {getNewsByCategory('경제').map((news) => (
-                <article key={news.id} className="group relative cursor-pointer border-b border-gray-100 pb-8 last:border-0" onClick={() => setSelectedNews(news)}>
-                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 font-sans text-[10px] font-bold text-gray-400 flex gap-2">
+                <article key={news.id} className="group relative cursor-pointer" onClick={() => setSelectedNews(news)}>
+                  <div className="absolute -top-6 right-0 opacity-0 group-hover:opacity-100 font-sans text-[11px] font-bold text-gray-400 flex gap-3 transition-opacity">
                     <button onClick={(e) => { e.stopPropagation(); if(checkAuth()) { setIsEditing(true); setSelectedNews(news); setEditForm(news); } }} className="underline">수정</button>
                     <button onClick={(e) => { e.stopPropagation(); handleDelete(news.id); }} className="underline">삭제</button>
                   </div>
-                  <h4 className="text-[21px] font-bold leading-snug mb-3 group-hover:text-gray-500 transition-colors">
+                  <h4 className="text-2xl font-bold leading-tight mb-4 group-hover:underline underline-offset-4 decoration-1">
                     {news.title}
                   </h4>
-                  <div className="text-[11px] font-sans font-bold text-gray-400">
-                    {new Date(news.created_at).toLocaleDateString('ko-KR')}
+                  <p className="text-[#555] text-[16px] leading-relaxed text-justify mb-5 line-clamp-3 font-serif">
+                    {news.content}
+                  </p>
+                  <div className="text-[11px] font-sans font-bold text-gray-400 uppercase tracking-widest">
+                    By 원준식 · {new Date(news.created_at).toLocaleDateString('ko-KR')}
                   </div>
                 </article>
               ))}
             </div>
           </div>
+
         </div>
       </main>
 
@@ -183,7 +191,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-8 font-serif tracking-tighter uppercase">The Daily Major News</h2>
           <div className="flex flex-wrap justify-center gap-x-12 gap-y-4 text-[12px] font-sans font-bold text-gray-400 mb-12 uppercase">
             {['조선일보', '동아일보', '중앙일보', '한겨레', '경향신문', '매일경제', '한국경제'].map(name => (
-              <span key={name} className="hover:text-black cursor-pointer">{name}</span>
+              <span key={name} className="hover:text-black cursor-pointer transition-colors">{name}</span>
             ))}
           </div>
           <div className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] leading-loose">
@@ -236,6 +244,7 @@ export default function Home() {
         </div>
       )}
 
+      {/* 속보 편집 모달 */}
       {isBreakingMode && (
         <div className="fixed inset-0 bg-white/95 z-[100] flex justify-center items-center p-6">
           <div className="max-w-md w-full font-sans">
